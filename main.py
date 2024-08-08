@@ -1,73 +1,9 @@
 import pygame
 import random
-import math
+from player import Player
+from item import Item
+from enemy import Enemy
 
-# Define the Player class
-class Player:
-    def __init__(self, x, y, image_path, speed):
-        self.x = x
-        self.y = y
-        self.image = pygame.image.load(image_path)
-        self.rect = self.image.get_rect(topleft=(x, y))
-        self.speed = speed
-
-    def draw(self, screen):
-        screen.blit(self.image, (self.x, self.y))
-
-    def move(self, keys, screen_width, screen_height):
-        if keys[pygame.K_a] and self.x > 0:
-            self.x -= self.speed
-        if keys[pygame.K_d] and self.x < screen_width - self.rect.width:
-            self.x += self.speed
-        if keys[pygame.K_w] and self.y > 0:
-            self.y -= self.speed
-        if keys[pygame.K_s] and self.y < screen_height - self.rect.height:
-            self.y += self.speed
-        self.rect.topleft = (self.x, self.y)
-
-# Define the Item class
-class Item:
-    def __init__(self, x, y, image_path):
-        self.x = x
-        self.y = y
-        self.image = pygame.image.load(image_path)
-        self.rect = self.image.get_rect(topleft=(x, y))
-        self.collected = False
-
-    def draw(self, screen):
-        if not self.collected:
-            screen.blit(self.image, (self.x, self.y))
-
-    def check_pickup(self, player):
-        if self.rect.colliderect(player.rect):
-            self.collected = True
-            return True
-        return False
-
-# Define the Enemy class
-class Enemy:
-    def __init__(self, x, y, image_path, speed):
-        self.x = x
-        self.y = y
-        self.image = pygame.image.load(image_path)
-        self.rect = self.image.get_rect(topleft=(x, y))
-        self.speed = speed
-
-    def draw(self, screen):
-        screen.blit(self.image, (self.x, self.y))
-
-    def move_towards_player(self, player):
-        dx = player.x - self.x
-        dy = player.y - self.y
-        distance = math.hypot(dx, dy)
-        if distance != 0:
-            dx /= distance
-            dy /= distance
-            self.x += dx * self.speed
-            self.y += dy * self.speed
-            self.rect.topleft = (self.x, self.y)
-
-# Define the Game class
 class Game:
     def __init__(self):
         pygame.init()
@@ -129,7 +65,6 @@ class Game:
 
         pygame.quit()
 
-# Main execution
 if __name__ == "__main__":
     game = Game()
     game.run()
