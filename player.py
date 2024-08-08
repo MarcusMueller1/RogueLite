@@ -1,4 +1,6 @@
 import pygame
+from weapon import Weapon
+from attack import Attack
 
 class Player:
     def __init__(self, x, y, image_path, speed):
@@ -18,9 +20,40 @@ class Player:
         self.armor = 0
         self.invincible = False
         self.invincible_time = 0
-        self.invincible_duration = 1000  # 1 second of invincibility after taking damage
-        self.can_shoot = True  # Initialize the can_shoot attribute
+        self.invincible_duration = 1000
         self.is_alive = True
+
+        # Initialize weapons
+        self.weapons = []
+        self.setup_weapons()
+
+    def setup_weapons(self):
+        # Example weapons setup with shapes and colors
+        self.weapons = [
+            Weapon(name="Pistol", damage=10, fire_rate=500, projectile_speed=15, shape='circle', color=(255, 0, 0)),
+            Weapon(name="Rifle", damage=8, fire_rate=300, projectile_speed=20, shape='square', color=(0, 255, 0)),
+            Weapon(name="Shotgun", damage=15, fire_rate=1000, projectile_speed=10, shape='circle', color=(0, 0, 255)),
+            Weapon(name="Sniper", damage=25, fire_rate=2000, projectile_speed=30, shape='square', color=(255, 255, 0)),
+            Weapon(name="Rocket Launcher", damage=50, fire_rate=3000, projectile_speed=8, shape='circle', color=(255, 165, 0)),
+            Weapon(name="Flamethrower", damage=5, fire_rate=100, projectile_speed=5, shape='square', color=(255, 0, 255)),
+        ]
+
+    def move(self, keys, screen_width, screen_height):
+        if keys[pygame.K_a] and self.x > 0:
+            self.x -= self.speed
+        if keys[pygame.K_d] and self.x < screen_width - self.rect.width:
+            self.x += self.speed
+        if keys[pygame.K_w] and self.y > 0:
+            self.y -= self.speed
+        if keys[pygame.K_s] and self.y < screen_height - self.rect.height:
+            self.y += self.speed
+        self.rect.topleft = (self.x, self.y)
+
+    def attack(self, attacks, target):
+        for weapon in self.weapons:
+            if weapon.can_shoot():
+                attack = Attack(self.rect.centerx, self.rect.centery, target, weapon.projectile_speed, weapon.shape, weapon.color, weapon.damage)
+                attacks.append(attack)
 
     def draw(self, screen):
         screen.blit(self.image, (self.x, self.y))
@@ -43,17 +76,6 @@ class Player:
         text = font.render(health_text, True, (255, 255, 255))
         text_rect = text.get_rect(center=(self.rect.centerx, health_bar_y - 10))
         screen.blit(text, text_rect)
-
-    def move(self, keys, screen_width, screen_height):
-        if keys[pygame.K_a] and self.x > 0:
-            self.x -= self.speed
-        if keys[pygame.K_d] and self.x < screen_width - self.rect.width:
-            self.x += self.speed
-        if keys[pygame.K_w] and self.y > 0:
-            self.y -= self.speed
-        if keys[pygame.K_s] and self.y < screen_height - self.rect.height:
-            self.y += self.speed
-        self.rect.topleft = (self.x, self.y)
 
     def take_damage(self, damage):
         if not self.invincible:
