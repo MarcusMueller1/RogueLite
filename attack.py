@@ -2,13 +2,15 @@ import pygame
 import math
 
 class Attack:
-    def __init__(self, x, y, target, speed, image_path):
+    def __init__(self, x, y, target, speed, image_path, damage):
         self.x = x
         self.y = y
         self.image = pygame.image.load(f'images/{image_path}')
         self.rect = self.image.get_rect(center=(x, y))
         self.speed = speed
         self.target = target
+        self.damage = damage
+        self.dx, self.dy = 0, 0  # Initialize dx and dy
         self.calculate_direction()
 
     def calculate_direction(self):
@@ -26,3 +28,6 @@ class Attack:
 
     def draw(self, screen):
         screen.blit(self.image, (self.rect.x, self.rect.y))
+
+    def hit_target(self):
+        return self.rect.colliderect(self.target.rect)
