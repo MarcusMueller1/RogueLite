@@ -5,7 +5,7 @@ class Enemy:
     def __init__(self, x, y, image_path, speed):
         self.x = x
         self.y = y
-        self.image = pygame.image.load(image_path)
+        self.image = pygame.image.load(f'images/{image_path}')
         self.rect = self.image.get_rect(topleft=(x, y))
         self.speed = speed
 
