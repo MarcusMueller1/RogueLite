@@ -2,9 +2,15 @@ import pygame
 
 class Player:
     def __init__(self, x, y, image_path, speed):
+        try:
+            self.image = pygame.image.load(f'images/{image_path}')
+        except pygame.error as e:
+            print(f"Error loading player image: {e}")
+            self.image = pygame.Surface((50, 50))
+            self.image.fill((255, 255, 255))
+
         self.x = x
         self.y = y
-        self.image = pygame.image.load(f'images/{image_path}')
         self.rect = self.image.get_rect(topleft=(x, y))
         self.speed = speed
         self.health = 100

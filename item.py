@@ -2,9 +2,15 @@ import pygame
 
 class Item:
     def __init__(self, x, y, image_path):
+        try:
+            self.image = pygame.image.load(f'images/{image_path}')
+        except pygame.error as e:
+            print(f"Error loading item image: {e}")
+            self.image = pygame.Surface((30, 30))
+            self.image.fill((0, 255, 0))
+
         self.x = x
         self.y = y
-        self.image = pygame.image.load(f'images/{image_path}')
         self.rect = self.image.get_rect(topleft=(x, y))
         self.collected = False
 

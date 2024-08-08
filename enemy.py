@@ -3,9 +3,15 @@ import math
 
 class Enemy:
     def __init__(self, x, y, image_path, speed):
+        try:
+            self.image = pygame.image.load(f'images/{image_path}')
+        except pygame.error as e:
+            print(f"Error loading enemy image: {e}")
+            self.image = pygame.Surface((50, 50))
+            self.image.fill((255, 0, 0))
+
         self.x = x
         self.y = y
-        self.image = pygame.image.load(f'images/{image_path}')
         self.rect = self.image.get_rect(topleft=(x, y))
         self.speed = speed
         self.health = 50  # Initial health for the enemy

@@ -1,5 +1,10 @@
 import pygame
 import random
+from player import Player
+from item import Item
+from enemy import Enemy
+from attack import Attack
+from damage_text import DamageText
 
 class Game:
     def __init__(self):
@@ -10,15 +15,14 @@ class Game:
         self.screen = pygame.display.set_mode(self.windowed_size)
         pygame.display.set_caption("2D Roguelite")
 
-        from player import Player
         self.player = Player(self.screen_width // 2, self.screen_height // 2, 'player.png', 5)
-
-        from item import Item
         self.item = Item(random.randint(0, self.screen_width - 30),
                          random.randint(0, self.screen_height - 30),
                          'item.png')
 
         self.enemies = []
+        self.attacks = []
+        self.damage_texts = []
 
         self.clock = pygame.time.Clock()
         self.running = True
@@ -26,9 +30,6 @@ class Game:
         self.last_spawn_time = pygame.time.get_ticks()
         self.shoot_interval = 1000  # Shoot every second
         self.last_shoot_time = pygame.time.get_ticks()
-
-        self.attacks = []
-        self.damage_texts = []
 
     def game_over(self):
         font = pygame.font.Font(None, 74)
@@ -84,7 +85,6 @@ class Game:
         return (dx ** 2 + dy ** 2) ** 0.5
 
     def spawn_enemy(self, count=3):
-        from enemy import Enemy  # Local import to avoid circular dependency
         for _ in range(count):
             x = random.randint(0, self.screen_width - 50)
             y = random.randint(0, self.screen_height - 50)
@@ -92,7 +92,6 @@ class Game:
             self.enemies.append(new_enemy)
 
     def handle_collisions(self):
-        from damage_text import DamageText  # Local import to avoid circular dependency
         for enemy in self.enemies:
             enemy.move_towards_player(self.player)
             if self.player.rect.colliderect(enemy.rect):
@@ -102,9 +101,6 @@ class Game:
                     self.damage_texts.append(damage_text)
 
     def handle_attacks(self):
-        from attack import Attack  # Local import to avoid circular dependency
-        from damage_text import DamageText  # Local import to avoid circular dependency
-
         current_time = pygame.time.get_ticks()
         if self.player.can_shoot:
             if current_time - self.last_shoot_time > self.shoot_interval:
