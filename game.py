@@ -28,6 +28,39 @@ class Game:
         self.running = True
         self.spawn_interval = 3000  # Spawn every 3 seconds
         self.last_spawn_time = pygame.time.get_ticks()
+    def game_over(self):
+        font = pygame.font.Font(None, 74)
+        game_over_text = font.render('Game Over', True, (255, 0, 0))
+        restart_text = font.render('Restart', True, (255, 255, 255))
+        quit_text = font.render('Quit', True, (255, 255, 255))
+
+        game_over_rect = game_over_text.get_rect(center=(self.screen_width // 2, self.screen_height // 2 - 50))
+        restart_rect = restart_text.get_rect(center=(self.screen_width // 2, self.screen_height // 2 + 50))
+        quit_rect = quit_text.get_rect(center=(self.screen_width // 2, self.screen_height // 2 + 150))
+
+        self.screen.blit(game_over_text, game_over_rect)
+        self.screen.blit(restart_text, restart_rect)
+        self.screen.blit(quit_text, quit_rect)
+        pygame.display.flip()
+
+        waiting = True
+        while waiting:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.running = False
+                    waiting = False
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        self.running = False
+                        waiting = False
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    mouse_pos = pygame.mouse.get_pos()
+                    if restart_rect.collidepoint(mouse_pos):
+                        self.__init__()  # Restart the game
+                        waiting = False
+                    elif quit_rect.collidepoint(mouse_pos):
+                        self.running = False
+                        waiting = False
 
     def handle_attacks(self):
         nearest_enemy = self.find_nearest_enemy()
