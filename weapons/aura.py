@@ -1,6 +1,6 @@
 from weapons.weapon import Weapon
 import pygame
-from game.ui import DamageText
+from game_logic.ui import DamageText
 
 class Aura(Weapon):
     def __init__(self):

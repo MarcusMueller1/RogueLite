@@ -6,8 +6,9 @@ from items.health_potion import HealthPotion
 from entities.player import Player
 from entities.enemy import Enemy
 from items.speed_boost import SpeedBoost
-from game.ui import DamageText
-from game.utils import get_distance
+from game_logic.ui import DamageText
+from game_logic.utils import get_distance
+
 
 class Game:
     def __init__(self):
@@ -45,6 +46,8 @@ class Game:
 
         # Trigger the first wave spawn immediately
         self.spawn_enemy(count=5)  # Adjust the count as necessary
+
+        self.paused = False
 
     def toggle_fullscreen(self):
         if self.fullscreen:
@@ -87,7 +90,7 @@ class Game:
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_pos = pygame.mouse.get_pos()
                     if restart_rect.collidepoint(mouse_pos):
-                        self.__init__()  # Restart the game
+                        self.__init__()  # Restart the game_logic
                         waiting = False
                     elif quit_rect.collidepoint(mouse_pos):
                         self.running = False
@@ -209,23 +212,25 @@ class Game:
                 elif event.type == pygame.KEYDOWN and event.key == pygame.K_F12:
                     self.toggle_fullscreen()
 
-            keys = pygame.key.get_pressed()
-            self.player.move(keys, self.screen_width, self.screen_height)
+            if not self.paused:
+                keys = pygame.key.get_pressed()
+                self.player.move(keys, self.screen_width, self.screen_height)
 
-            self.player.update_invincibility()  # Ensure this is called to manage invincibility
+                self.player.update_invincibility()
 
-            # Update items logic
-            for item in self.items:
-                if not item.collected:
-                    item.check_pickup(self.player)
+                for item in self.items:
+                    if not item.collected:
+                        item.check_pickup(self.player)
 
-            if current_time - self.last_spawn_time > self.spawn_interval:
-                self.spawn_enemy(count=5)
-                self.last_spawn_time = current_time
+                if current_time - self.last_spawn_time > self.spawn_interval:
+                    self.spawn_enemy(count=5)
+                    self.last_spawn_time = current_time
 
-            self.handle_collisions()
-            self.handle_attacks()
+                self.handle_collisions()
+                self.handle_attacks()
+
             self.update_and_draw()
+
             if not self.player.is_alive:
                 self.game_over()
 

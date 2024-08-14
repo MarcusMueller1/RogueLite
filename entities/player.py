@@ -2,6 +2,7 @@ import random
 
 import pygame
 
+from game_logic import game
 from weapons.attack import Attack
 from weapons.aura import Aura
 from weapons.flamethrower import Flamethrower
@@ -12,8 +13,41 @@ from weapons.shotgun import Shotgun
 from weapons.sniper import Sniper
 
 
+def display_weapon_choices(screen, choices):
+    font = pygame.font.Font(None, 30)  # Reduce font size
+    rect_width, rect_height = 200, 60
+    padding = 20
+    start_x = (screen.get_width() - (rect_width * len(choices) + padding * (len(choices) - 1))) // 2
+    start_y = (screen.get_height() - rect_height) // 2
+
+    rects = []
+    for i, weapon in enumerate(choices):
+        rect_x = start_x + i * (rect_width + padding)
+        rect_y = start_y
+        rect = pygame.Rect(rect_x, rect_y, rect_width, rect_height)
+        rects.append(rect)
+
+        # Draw the rectangle
+        pygame.draw.rect(screen, (0, 0, 0), rect)
+        pygame.draw.rect(screen, (255, 255, 255), rect, 2)
+
+        # Draw the weapons name and level
+        text = font.render(f"{weapon.name} (Lvl. {weapon.level})", True, (255, 255, 255))
+        text_rect = text.get_rect(center=rect.center)
+        screen.blit(text, text_rect)
+
+    pygame.display.flip()
+    return rects
+
+
+def die():
+    print("Player has died")
+    # Handle player's death
+
+
 class Player:
     def __init__(self, x, y, image_path, speed):
+        self.game = game
         try:
             self.image = pygame.image.load(f'assets/images/{image_path}')
         except pygame.error as e:
@@ -126,12 +160,14 @@ class Player:
         print(f"Leveled up! Now at level {self.level}, XP needed for next level: {self.xp_to_next_level}")
 
     def choose_new_weapon(self, screen):
+        self.game.paused = True
+
         available_weapons = [Pistol(), Rifle(), Shotgun(), Sniper(), RocketLauncher(), Flamethrower(),
                              Aura()]  # Add Aura here
         random.shuffle(available_weapons)
         choices = available_weapons[:3]  # Pick 3 random weapons
 
-        rects = self.display_weapon_choices(screen, choices)
+        rects = display_weapon_choices(screen, choices)
 
         chosen_weapon = None
         while not chosen_weapon:
@@ -146,6 +182,7 @@ class Player:
                             chosen_weapon = choices[i]
                             self.add_or_level_up_weapon(chosen_weapon)
                             break
+        self.game.paused = True
 
     def add_or_level_up_weapon(self, new_weapon):
         for weapon in self.weapons:
@@ -156,32 +193,6 @@ class Player:
         # If the weapons is not found in the inventory, add it
         self.weapons.append(new_weapon)
         print(f"{new_weapon.name} added to your inventory.")
-
-    def display_weapon_choices(self, screen, choices):
-        font = pygame.font.Font(None, 30)  # Reduce font size
-        rect_width, rect_height = 200, 60
-        padding = 20
-        start_x = (screen.get_width() - (rect_width * len(choices) + padding * (len(choices) - 1))) // 2
-        start_y = (screen.get_height() - rect_height) // 2
-
-        rects = []
-        for i, weapon in enumerate(choices):
-            rect_x = start_x + i * (rect_width + padding)
-            rect_y = start_y
-            rect = pygame.Rect(rect_x, rect_y, rect_width, rect_height)
-            rects.append(rect)
-
-            # Draw the rectangle
-            pygame.draw.rect(screen, (0, 0, 0), rect)
-            pygame.draw.rect(screen, (255, 255, 255), rect, 2)
-
-            # Draw the weapons name and level
-            text = font.render(f"{weapon.name} (Lvl. {weapon.level})", True, (255, 255, 255))
-            text_rect = text.get_rect(center=rect.center)
-            screen.blit(text, text_rect)
-
-        pygame.display.flip()
-        return rects
 
     def draw_weapon_box(self, screen):
         font = pygame.font.Font(None, 24)  # Font size adjusted to fit within the box
@@ -210,7 +221,7 @@ class Player:
         random.shuffle(available_weapons)
         choices = available_weapons[:3]  # Randomly select 3 weapons
 
-        rects = self.display_weapon_choices(screen, choices)
+        rects = display_weapon_choices(screen, choices)
 
         chosen_weapon = None
         while not chosen_weapon:
@@ -246,6 +257,3 @@ class Player:
             if current_time - self.invincible_time > self.invincible_duration:
                 self.invincible = False  # End invincibility
 
-    def die(self):
-        print("Player has died")
-        # Handle player's death
