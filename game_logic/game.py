@@ -70,6 +70,10 @@ def choose_character(screen):
 class Game:
     def __init__(self):
         pygame.init()
+        self.map_width = 2560  # Larger map width
+        self.map_height = 1440  # Larger map height
+        self.camera_x = 0
+        self.camera_y = 0
         self.fullscreen = False
         self.windowed_size = (1280, 720)
         self.screen_width, self.screen_height = self.windowed_size
@@ -78,7 +82,7 @@ class Game:
         pygame.display.set_caption("2D Roguelite")
 
         self.background_image = pygame.image.load('assets/images/background.png').convert()
-        self.background_image = pygame.transform.scale(self.background_image, (self.screen_width, self.screen_height))
+        self.background_image = pygame.transform.scale(self.background_image, (self.map_width, self.map_height))
 
         self.enemies = []
         self.items = []
@@ -191,6 +195,20 @@ class Game:
             return min(self.enemies, key=lambda enemy: get_distance(self.player, enemy))
         return None
 
+    def update_camera(self):
+        half_screen_width = self.screen_width // 2
+        half_screen_height = self.screen_height // 2
+
+        # Update camera position to follow the player
+        self.camera_x = self.player.rect.centerx - half_screen_width
+        self.camera_y = self.player.rect.centery - half_screen_height
+
+        # Ensure the camera doesn't move out of the map boundaries
+        self.camera_x = max(0, min(self.camera_x, self.map_width - self.screen_width))
+        self.camera_y = max(0, min(self.camera_y, self.map_height - self.screen_height))
+
+        # Debugging the camera position
+
     def spawn_enemy(self, count=3):
         for _ in range(count):
             edge = random.choice(['top', 'bottom', 'left', 'right'])
@@ -223,50 +241,55 @@ class Game:
                     self.damage_text.append(damage_text)
 
     def update_and_draw(self):
-        self.screen.blit(self.background_image, (0, 0))
+        self.screen.blit(self.background_image, (-self.camera_x, -self.camera_y))
+
 
         for text in self.damage_text[:]:
             text.update()
             if text.is_expired():
                 self.damage_text.remove(text)
             else:
-                text.draw(self.screen)
+                text.draw(self.screen, self.camera_x, self.camera_y)
 
         xp_orbs_to_remove = []
         for xp_orb in self.xp_orbs[:]:
             if xp_orb.update(self.player, self.screen):
                 xp_orbs_to_remove.append(xp_orb)
             else:
-                xp_orb.draw(self.screen)
+                # Pass the camera offsets to the draw method
+                xp_orb.draw(self.screen, self.camera_x, self.camera_y)
 
         for xp_orb in xp_orbs_to_remove:
             if xp_orb in self.xp_orbs:
                 self.xp_orbs.remove(xp_orb)
 
-        self.player.draw(self.screen)
+        self.player.draw(self.screen, self.camera_x, self.camera_y)
         self.player.draw_weapon_box(self.screen)
 
         for item in self.items:
             if not item.collected:
-                item.draw(self.screen)
+                item.draw(self.screen, self.camera_x, self.camera_y)
 
         for enemy in self.enemies:
-            enemy.draw(self.screen)
+            enemy.draw(self.screen, self.camera_x, self.camera_y)
         for attack in self.attacks:
-            attack.draw(self.screen)
+            attack.draw(self.screen, self.camera_x, self.camera_y)
 
         pygame.display.flip()
 
     def draw_pause_menu(self, screen, choices, rects):
-        screen.blit(self.background_image, (0, 0))
+        # Draw the background using the camera offset
+        screen.blit(self.background_image, (-self.camera_x, -self.camera_y))
 
-        self.player.draw(screen)
+        # Draw the player, enemies, and items with camera offsets
+        self.player.draw(screen, self.camera_x, self.camera_y)
         for enemy in self.enemies:
-            enemy.draw(screen)
+            enemy.draw(screen, self.camera_x, self.camera_y)
         for item in self.items:
             if not item.collected:
-                item.draw(screen)
+                item.draw(screen, self.camera_x, self.camera_y)
 
+        # Draw the weapon selection menu
         for rect, weapon in zip(rects, choices):
             pygame.draw.rect(screen, (0, 0, 0), rect)
             pygame.draw.rect(screen, (255, 255, 255), rect, 2)
@@ -289,7 +312,9 @@ class Game:
 
             if not self.paused:
                 keys = pygame.key.get_pressed()
-                self.player.move(keys, self.screen_width, self.screen_height)
+                self.player.move(keys, self.map_width, self.map_height)
+
+                self.update_camera()
 
                 self.player.update_invincibility()
 

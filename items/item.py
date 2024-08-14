@@ -15,9 +15,8 @@ class Item:
         self.rect = self.image.get_rect(topleft=(x, y))
         self.collected = False
 
-    def draw(self, screen):
-        if not self.collected:
-            screen.blit(self.image, (self.x, self.y))
+    def draw(self, screen, camera_x=0, camera_y=0):
+        screen.blit(self.image, (self.x - camera_x, self.y - camera_y))
 
     def check_pickup(self, player):
         if self.rect.colliderect(player.rect):

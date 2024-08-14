@@ -20,10 +20,10 @@ class Aura(Weapon):
         self.level += 1
         self.damage = self.initial_damage * (1 + 0.2 * (self.level - 1))
         self.radius += 20  # Increase the radius by 20 units per level
-        print(f"{self.name} leveled up to level {self.level}. Damage is now {self.damage}.")
 
-    def draw(self, screen, player):
-        pygame.draw.circle(screen, self.color, player.rect.center, self.radius, 2)
+    # Inside the Aura class in aura.py
+    def draw(self, screen, player_x, player_y, camera_x=0, camera_y=0):
+        pygame.draw.circle(screen, self.color, (player_x - camera_x, player_y - camera_y), self.radius, 2)
 
     def apply_damage(self, enemies, player, damage_texts):
         current_time = pygame.time.get_ticks()
@@ -35,7 +35,6 @@ class Aura(Weapon):
                 distance = ((enemy.rect.centerx - player.rect.centerx) ** 2 + (
                         enemy.rect.centery - player.rect.centery) ** 2) ** 0.5
                 if distance <= self.radius:
-                    print(f"Applying {self.damage} damage to enemy at distance {distance}")  # Debug statement
                     enemy.take_damage(self.damage)
                     damage_text = DamageText(enemy.rect.centerx, enemy.rect.centery, self.damage)
                     damage_texts.append(damage_text)

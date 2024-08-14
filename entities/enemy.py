@@ -23,8 +23,8 @@ class Enemy:
         self.health = 50
         self.damage = 10
 
-    def draw(self, screen):
-        screen.blit(self.image, (self.x, self.y))
+    def draw(self, screen, camera_x, camera_y):
+        screen.blit(self.image, (self.x - camera_x, self.y - camera_y))
 
     def move_towards_player(self, player, enemies):
         dx = player.x - self.x
@@ -62,7 +62,6 @@ class Enemy:
     def take_damage(self, amount):
         if self.health > 0 and not self.dead:
             self.health -= amount
-            print(f"Enemy took {amount} damage, health is now {self.health}")  # Debug statement
             if self.health <= 0:
                 self.health = 0
                 self.die()
@@ -70,7 +69,6 @@ class Enemy:
     def die(self):
         if not self.dead:
             self.dead = True
-            print("Enemy died")
             xp_value = 50
             xp_orb = XP(self.rect.centerx, self.rect.centery, xp_value)
             self.game.xp_orbs.append(xp_orb)

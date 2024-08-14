@@ -37,14 +37,15 @@ class Attack:
             self.hit_time = pygame.time.get_ticks()
             self.active = False  # Deactivate after hitting the target
 
-    def draw(self, screen):
+    def draw(self, screen, camera_x=0, camera_y=0):
         if not self.active:
             return  # Do not draw inactive projectiles
 
         if self.shape == 'circle':
-            pygame.draw.circle(screen, self.color, self.rect.center, 10)
+            pygame.draw.circle(screen, self.color, (self.rect.centerx - camera_x, self.rect.centery - camera_y), 10)
         elif self.shape == 'square':
-            pygame.draw.rect(screen, self.color, self.rect)
+            rect_with_offset = self.rect.move(-camera_x, -camera_y)
+            pygame.draw.rect(screen, self.color, rect_with_offset)
 
     def hit_target(self):
         return self.rect.colliderect(self.target.rect)

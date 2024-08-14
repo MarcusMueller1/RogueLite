@@ -46,6 +46,7 @@ def die():
 
 
 class Player:
+
     def __init__(self, game, x, y, image_path, character: Character):
         self.game = game
         self.character = character
@@ -87,9 +88,6 @@ class Player:
                 weapon.level_up()
                 return
         self.weapons.append(new_weapon)
-        print(f"{new_weapon.name} added to your inventory with stats modified by {self.character.name}.")
-
-
 
     def move(self, keys, screen_width, screen_height):
         if keys[pygame.K_a] and self.x > 0:
@@ -112,23 +110,24 @@ class Player:
                                     weapon.color, weapon.damage, 100)
                     attacks.append(attack)
 
-    def draw(self, screen):
-        screen.blit(self.image, (self.x, self.y))
-        self.draw_health_bar(screen)
+    def draw(self, screen, camera_x, camera_y):
+        screen.blit(self.image, (self.x - camera_x, self.y - camera_y))
+        self.draw_health_bar(screen, camera_x, camera_y)
         self.draw_xp_bar(screen)
 
         for weapon in self.weapons:
             if isinstance(weapon, Aura):
-                weapon.draw(screen, self)
+                weapon.draw(screen, self.rect.centerx, self.rect.centery, camera_x, camera_y)
 
-    def draw_health_bar(self, screen):
+
+    def draw_health_bar(self, screen, camera_x=0, camera_y=0):
         bar_width = 100
         bar_height = 10
         health_ratio = self.health / self.max_health
         health_bar_width = int(bar_width * health_ratio)
 
-        health_bar_x = self.rect.centerx - (bar_width // 2)
-        health_bar_y = self.rect.top - 25
+        health_bar_x = self.rect.centerx - (bar_width // 2) - camera_x
+        health_bar_y = self.rect.top - 25 - camera_y
 
         pygame.draw.rect(screen, (255, 0, 0), (health_bar_x, health_bar_y, bar_width, bar_height))
         pygame.draw.rect(screen, (0, 255, 0), (health_bar_x, health_bar_y, health_bar_width, bar_height))
@@ -136,25 +135,21 @@ class Player:
         font = pygame.font.Font(None, 24)
         health_text = f"{int(self.health)}/{self.max_health}"
         text = font.render(health_text, True, (255, 255, 255))
-        text_rect = text.get_rect(center=(self.rect.centerx, health_bar_y - 10))
+        text_rect = text.get_rect(center=(self.rect.centerx - camera_x, health_bar_y - 10))
         screen.blit(text, text_rect)
 
-    def draw_xp_bar(self, screen):
-        bar_width = screen.get_width()  # Full width of the screen
-        bar_height = 20  # Height of the XP bar
+    def draw_xp_bar(self, screen, camera_x=0, camera_y=0):
+        bar_width = screen.get_width()
+        bar_height = 20
         xp_ratio = self.xp / self.xp_to_next_level
         xp_bar_width = int(bar_width * xp_ratio)
 
-        xp_bar_x = 0  # Start at the left edge of the screen
-        xp_bar_y = 10  # A little padding from the top
+        xp_bar_x = 0  # The XP bar usually spans the full width, so no camera offset is needed horizontally
+        xp_bar_y = 10 - camera_y
 
-        # Draw the background of the XP bar
         pygame.draw.rect(screen, (50, 50, 50), (xp_bar_x, xp_bar_y, bar_width, bar_height))
-
-        # Draw the XP progress on top of the background
         pygame.draw.rect(screen, (0, 0, 255), (xp_bar_x, xp_bar_y, xp_bar_width, bar_height))
 
-        # Optionally, draw the level text in the center of the XP bar
         font = pygame.font.Font(None, 36)
         xp_text = f"Level {self.level}"
         text = font.render(xp_text, True, (255, 255, 255))
@@ -173,10 +168,15 @@ class Player:
         self.max_health += 10  # Increase player's max health as an example
         self.health = self.max_health  # Heal the player to full health
         self.choose_new_weapon(screen)  # Allow the player to choose a new weapon
-        print(f"Leveled up! Now at level {self.level}, XP needed for next level: {self.xp_to_next_level}")
+
+    # In the choose_new_weapon method (in player.py)
 
     def choose_new_weapon(self, screen):
-        self.game.paused = True
+        # Preserve the current game state before showing the weapon selection screen
+        current_camera_x = self.game.camera_x
+        current_camera_y = self.game.camera_y
+
+        self.game.paused = True  # Pause the game
 
         available_weapons = [Pistol(), Rifle(), Shotgun(), Sniper(), RocketLauncher(), Flamethrower(), Aura()]
         random.shuffle(available_weapons)
@@ -186,7 +186,6 @@ class Player:
 
         chosen_weapon = None
         while not chosen_weapon:
-            # Handle events
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
@@ -199,10 +198,18 @@ class Player:
                             self.add_or_level_up_weapon(chosen_weapon)
                             break
 
-            # Use the dedicated drawing function for the pause menu
-            self.game.draw_pause_menu(screen, choices, rects)
+            # Instead of redrawing the background, just draw the current state
+            self.draw(screen, current_camera_x,
+                      current_camera_y)  # Draw the player and other entities in their last known positions
+            self.game.draw_pause_menu(screen, choices, rects)  # Overlay the weapon selection screen
 
-        self.game.paused = False  # Unpause the game after weapon selection
+            pygame.display.flip()  # Update the full display surface to the screen
+
+        # Restore the camera position after selecting the weapon
+        self.game.camera_x = current_camera_x
+        self.game.camera_y = current_camera_y
+
+        self.game.paused = False  # Unpause the game
 
     def add_or_level_up_weapon(self, new_weapon):
         self.character.apply_to_weapon(new_weapon)
@@ -211,7 +218,6 @@ class Player:
                 weapon.level_up()
                 return
         self.weapons.append(new_weapon)
-        print(f"{new_weapon.name} added to your inventory with stats modified by {self.character.name}.")
 
 
 
