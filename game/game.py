@@ -153,8 +153,11 @@ class Game:
 
     def handle_collisions(self):
         for enemy in self.enemies:
-            enemy.move_towards_player(self.player)
-            if self.player.rect.colliderect(enemy.rect):
+            enemy.move_towards_player(self.player, self.enemies)
+
+            # Check for collision with player and apply damage
+            collision_distance = 10  # Distance in pixels to buffer the collision
+            if self.player.rect.inflate(collision_distance, collision_distance).colliderect(enemy.rect):
                 effective_damage = self.player.take_damage(enemy.damage)
                 if effective_damage > 0:
                     damage_text = DamageText(self.player.rect.centerx, self.player.rect.centery - 20, effective_damage)

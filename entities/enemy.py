@@ -21,7 +21,7 @@ class Enemy:
     def draw(self, screen):
         screen.blit(self.image, (self.x, self.y))
 
-    def move_towards_player(self, player):
+    def move_towards_player(self, player, enemies):
         dx = player.x - self.x
         dy = player.y - self.y
         distance = math.hypot(dx, dy)
@@ -32,20 +32,39 @@ class Enemy:
             self.y += dy * self.speed
             self.rect.topleft = (self.x, self.y)
 
+        # Prevent overlapping with other enemies
+        self.avoid_overlapping(enemies)
+
+    def avoid_overlapping(self, enemies):
+        repulsion_strength = 0.5  # Lower value for smoother movement
+
+        for other in enemies:
+            if other is not self:
+                dx = self.rect.centerx - other.rect.centerx
+                dy = self.rect.centery - other.rect.centery
+                distance = math.hypot(dx, dy)
+                min_distance = self.rect.width / 2 + other.rect.width / 2
+
+                if distance < min_distance and distance > 0:
+                    # Apply a repulsive force to move them apart
+                    overlap = min_distance - distance
+                    dx /= distance
+                    dy /= distance
+                    self.x += dx * overlap * repulsion_strength
+                    self.y += dy * overlap * repulsion_strength
+                    self.rect.topleft = (self.x, self.y)
+
     def take_damage(self, amount):
         if self.health <= 0:
             return  # Prevent further damage if the enemy is already dead
 
-        print(f"Enemy health before damage: {self.health}")
         self.health -= amount
-        print(f"Enemy took {amount} damage, health is now {self.health}")
         if self.health <= 0:
             self.health = 0  # Prevent health from going negative
             self.die()
 
     def die(self):
         print("Enemy died")
-        # Drop XP upon death
         xp_value = 50  # Example value, adjust as necessary
         xp_orb = XP(self.rect.centerx, self.rect.centery, xp_value)
         return xp_orb  # Return the created XP orb
