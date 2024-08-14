@@ -5,8 +5,8 @@ from game_logic.ui import DamageText
 class Aura(Weapon):
     def __init__(self):
         super().__init__(name="Aura", base_damage=1, fire_rate=0, projectile_speed=0, shape='circle', color=(255, 255, 0))
-        self.radius = 200  # Initial radius of the aura
-        self.damage_interval = 1000  # Time in milliseconds between damage applications
+        self.radius = 125  # Initial radius of the aura
+        self.damage_interval = 700  # Time in milliseconds between damage applications
         self.last_damage_time = 0  # Tracks the last time damage was applied
 
     def level_up(self):
