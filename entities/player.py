@@ -62,10 +62,10 @@ class Player:
         self.max_health = character.health
         self.armor = character.armor
         self.speed = character.speed
-        self.invincible = False  # Initialize invincibility state
-        self.invincible_time = 0  # Initialize the time when invincibility starts
-        self.invincible_duration = 1000  # Duration of invincibility in milliseconds
-        self.is_alive = True  # Player starts as alive
+        self.invincible = False
+        self.invincible_time = 0
+        self.invincible_duration = 1000
+        self.is_alive = True
 
         # Initialize XP and level attributes
         self.level = 1
@@ -74,7 +74,22 @@ class Player:
 
         # Initialize weapons list
         self.weapons = []
-        self.add_or_level_up_weapon(character.starting_weapon)
+        starting_weapon = character.starting_weapon
+        self.add_or_level_up_weapon(starting_weapon)
+
+        # Apply character modifiers to the starting weapon if it's an Aura
+        if isinstance(starting_weapon, Aura):
+            starting_weapon.apply_modifiers(character.damage, character.radius)
+
+    def add_or_level_up_weapon(self, new_weapon):
+        for weapon in self.weapons:
+            if weapon.name == new_weapon.name:
+                weapon.level_up()
+                return
+        self.weapons.append(new_weapon)
+        print(f"{new_weapon.name} added to your inventory with stats modified by {self.character.name}.")
+
+
 
     def move(self, keys, screen_width, screen_height):
         if keys[pygame.K_a] and self.x > 0:

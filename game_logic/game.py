@@ -41,11 +41,11 @@ def display_character_choices(screen, characters):
 
 def choose_character(screen):
     characters = [
-        Character("Warrior", health=150, armor=10, speed=1.0, damage=1.2, attack_speed=0.9, radius=1.0,
+        Character("Warrior", health=150, armor=10, speed=5.0, damage=1.2, attack_speed=0.9, radius=1.0,
                   starting_weapon=Pistol()),
-        Character("Mage", health=100, armor=5, speed=1.1, damage=1.5, attack_speed=1.1, radius=1.5,
+        Character("Mage", health=100, armor=5, speed=5, damage=1.5, attack_speed=1.1, radius=1.5,
                   starting_weapon=Aura()),
-        Character("Rogue", health=80, armor=3, speed=1.5, damage=1.3, attack_speed=1.5, radius=1.0,
+        Character("Rogue", health=80, armor=3, speed=5, damage=1.3, attack_speed=1.5, radius=1.0,
                   starting_weapon=Flamethrower()),
     ]
 
@@ -298,7 +298,7 @@ class Game:
                         item.check_pickup(self.player)
 
                 if current_time - self.last_spawn_time > self.spawn_interval:
-                    self.spawn_enemy(count=5)
+                    self.spawn_enemy(count=10)
                     self.last_spawn_time = current_time
 
                 self.handle_collisions()

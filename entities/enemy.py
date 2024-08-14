@@ -7,7 +7,7 @@ from entities.xp import XP
 
 class Enemy:
     def __init__(self, x, y, image_path, speed, game):
-        self.game = game  # Store the reference to the game instance
+        self.game = game
         try:
             self.image = pygame.image.load(f'assets/images/{image_path}')
         except pygame.error as e:
@@ -60,10 +60,11 @@ class Enemy:
                     self.rect.topleft = (self.x, self.y)
 
     def take_damage(self, amount):
-        if self.health > 0 and not self.dead:  # Only apply damage if the enemy is alive and not already dead
+        if self.health > 0 and not self.dead:
             self.health -= amount
+            print(f"Enemy took {amount} damage, health is now {self.health}")  # Debug statement
             if self.health <= 0:
-                self.health = 0  # Prevent health from going negative
+                self.health = 0
                 self.die()
 
     def die(self):
@@ -72,7 +73,8 @@ class Enemy:
             print("Enemy died")
             xp_value = 50
             xp_orb = XP(self.rect.centerx, self.rect.centery, xp_value)
-            self.game.xp_orbs.append(xp_orb)  # Add XP orb to the game's xp_orbs list
+            self.game.xp_orbs.append(xp_orb)
+            self.game.enemies.remove(self)  # Remove the enemy from the game's enemy list
 
     def is_dead(self):
         return self.dead

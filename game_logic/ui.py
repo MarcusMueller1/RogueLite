@@ -5,7 +5,7 @@ class DamageText:
     def __init__(self, x, y, damage, font_size=20, color=(255, 0, 0), duration=1000):
         self.x = x
         self.y = y
-        self.damage = damage
+        self.damage = round(damage, 2)  # Round the damage to 2 decimal places
         self.font_size = font_size
         self.color = color
         self.duration = duration  # Duration in milliseconds

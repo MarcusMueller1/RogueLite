@@ -1,7 +1,5 @@
 import math
-
 import pygame
-
 
 class Attack:
     def __init__(self, x, y, target, speed, shape, color, damage, delay=100):
@@ -35,9 +33,9 @@ class Attack:
         self.y += self.dy
         self.rect.center = (self.x, self.y)
 
-        # Set hit time if projectile hits the target
-        if self.hit_target() and self.hit_time is None:
+        if self.hit_target():
             self.hit_time = pygame.time.get_ticks()
+            self.active = False  # Deactivate after hitting the target
 
     def draw(self, screen):
         if not self.active:
@@ -52,8 +50,8 @@ class Attack:
         return self.rect.colliderect(self.target.rect)
 
     def can_apply_damage(self):
-        if self.hit_time and self.active:
-            if pygame.time.get_ticks() - self.hit_time >= self.delay:
-                self.active = False  # Deactivate the projectile after applying damage
-                return True
+        if self.hit_time and not self.active:
+            return True
         return False
+
+
