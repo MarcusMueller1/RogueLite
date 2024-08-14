@@ -164,11 +164,13 @@ class Game:
         # Draw the background image first
         self.screen.blit(self.background_image, (0, 0))
 
-        # Draw other game elements on top of the background
-        for text in self.damage_texts:
+        # Update and draw damage texts
+        for text in self.damage_texts[:]:
             text.update()
             if text.is_expired():
                 self.damage_texts.remove(text)
+            else:
+                text.draw(self.screen)
 
         # Update and draw XP orbs
         for xp_orb in self.xp_orbs[:]:
