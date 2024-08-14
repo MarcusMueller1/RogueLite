@@ -7,6 +7,64 @@ from game_logic.utils import get_distance
 from items.armor_upgrade import ArmorUpgrade
 from items.health_potion import HealthPotion
 from items.speed_boost import SpeedBoost
+from entities.character import Character
+from entities.player import Player
+from weapons.pistol import Pistol
+from weapons.aura import Aura
+from weapons.flamethrower import Flamethrower
+
+
+def display_character_choices(screen, characters):
+    font = pygame.font.Font(None, 30)
+    rect_width, rect_height = 200, 60
+    padding = 20
+    start_x = (screen.get_width() - (rect_width * len(characters) + padding * (len(characters) - 1))) // 2
+    start_y = (screen.get_height() - rect_height) // 2
+
+    rects = []
+    for i, character in enumerate(characters):
+        rect_x = start_x + i * (rect_width + padding)
+        rect_y = start_y
+        rect = pygame.Rect(rect_x, rect_y, rect_width, rect_height)
+        rects.append(rect)
+
+        pygame.draw.rect(screen, (0, 0, 0), rect)
+        pygame.draw.rect(screen, (255, 255, 255), rect, 2)
+
+        text = font.render(f"{character.name}", True, (255, 255, 255))
+        text_rect = text.get_rect(center=rect.center)
+        screen.blit(text, text_rect)
+
+    pygame.display.flip()
+    return rects
+
+
+def choose_character(screen):
+    characters = [
+        Character("Warrior", health=150, armor=10, speed=1.0, damage=1.2, attack_speed=0.9, radius=1.0,
+                  starting_weapon=Pistol()),
+        Character("Mage", health=100, armor=5, speed=1.1, damage=1.5, attack_speed=1.1, radius=1.5,
+                  starting_weapon=Aura()),
+        Character("Rogue", health=80, armor=3, speed=1.5, damage=1.3, attack_speed=1.5, radius=1.0,
+                  starting_weapon=Flamethrower()),
+    ]
+
+    rects = display_character_choices(screen, characters)
+
+    chosen_character = None
+    while not chosen_character:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = pygame.mouse.get_pos()
+                for i, rect in enumerate(rects):
+                    if rect.collidepoint(mouse_pos):
+                        chosen_character = characters[i]
+                        break
+
+    return chosen_character
 
 
 class Game:
@@ -16,20 +74,17 @@ class Game:
         self.windowed_size = (1280, 720)
         self.screen_width, self.screen_height = self.windowed_size
 
-        # Set up the display with double buffering enabled
         self.screen = pygame.display.set_mode(self.windowed_size, pygame.DOUBLEBUF)
         pygame.display.set_caption("2D Roguelite")
 
-        # Load and set up the background image
         self.background_image = pygame.image.load('assets/images/background.png').convert()
         self.background_image = pygame.transform.scale(self.background_image, (self.screen_width, self.screen_height))
 
-        # Initialize game elements
-        self.enemies = []  # Initialize enemies list
-        self.items = []  # Initialize items list
-        self.attacks = []  # Initialize attacks list
-        self.damage_text = []  # Initialize damage text list
-        self.xp_orbs = []  # Initialize XP orbs list
+        self.enemies = []
+        self.items = []
+        self.attacks = []
+        self.damage_text = []
+        self.xp_orbs = []
 
         self.items = [
             HealthPotion(random.randint(0, self.screen_width - 30), random.randint(0, self.screen_height - 30),
@@ -40,21 +95,15 @@ class Game:
                          'armor_upgrade.png')
         ]
 
-        # Initialize other game-related attributes
         self.clock = pygame.time.Clock()
-        self.running = True  # Ensure this is initialized before using it in the run method
-        self.spawn_interval = 10000  # Spawn every 10 seconds
+        self.running = True
+        self.spawn_interval = 10000
         self.last_spawn_time = pygame.time.get_ticks()
 
-        # Initialize the player after initializing the game elements
-        from entities.player import Player  # Importing here to avoid circular dependency
-        self.player = Player(self, self.screen_width // 2, self.screen_height // 2, 'player.png', 5)
+        character = choose_character(self.screen)
+        self.player = Player(self, self.screen_width // 2, self.screen_height // 2, 'player.png', character)
 
-        # Now that all game elements are initialized, choose starting weapon
-        self.player.choose_starting_weapon(self.screen)
-
-        # Trigger the first wave spawn immediately
-        self.spawn_enemy(count=5)  # Adjust the count as necessary
+        self.spawn_enemy(count=5)
 
         self.paused = False
 
@@ -68,7 +117,6 @@ class Game:
             self.screen_width, self.screen_height = self.screen.get_size()
             self.fullscreen = True
 
-        # Resize the background image to fit the new screen size
         self.background_image = pygame.transform.scale(self.background_image, (self.screen_width, self.screen_height))
 
     def game_over(self):
@@ -118,24 +166,21 @@ class Game:
             if attack.can_apply_damage():
                 if attack.target.is_dead():
                     attacks_to_remove.append(attack)
-                    continue  # Skip this attack if the target is already dead
+                    continue
 
-                # Apply damage to the target
                 attack.target.take_damage(attack.damage)
-
-                # Add the creation of DamageText
                 damage_text = DamageText(attack.target.rect.centerx, attack.target.rect.centery, attack.damage)
                 self.damage_text.append(damage_text)
 
                 if attack.target.is_dead() and attack.target not in enemies_to_remove:
                     enemies_to_remove.append(attack.target)
 
-                attacks_to_remove.append(attack)  # Mark the attack for removal after it hits
+                attacks_to_remove.append(attack)
 
         for enemy in enemies_to_remove:
             if enemy in self.enemies:
-                enemy.die()  # This will now automatically add the XP orb to the game's xp_orbs list
-                self.enemies.remove(enemy)  # Ensure enemy is removed from the list
+                enemy.die()
+                self.enemies.remove(enemy)
 
         for attack in attacks_to_remove:
             if attack in self.attacks:
@@ -163,15 +208,14 @@ class Game:
                 x = self.screen_width - 50
                 y = random.randint(0, self.screen_height - 50)
 
-            new_enemy = Enemy(x, y, 'enemy.png', 2, self)  # Pass the game instance
+            new_enemy = Enemy(x, y, 'enemy.png', 2, self)
             self.enemies.append(new_enemy)
 
     def handle_collisions(self):
         for enemy in self.enemies:
             enemy.move_towards_player(self.player, self.enemies)
 
-            # Check for collision with player and apply damage
-            collision_distance = 10  # Distance in pixels to buffer the collision
+            collision_distance = 10
             if self.player.rect.inflate(collision_distance, collision_distance).colliderect(enemy.rect):
                 effective_damage = self.player.take_damage(enemy.damage)
                 if effective_damage > 0:
@@ -179,10 +223,8 @@ class Game:
                     self.damage_text.append(damage_text)
 
     def update_and_draw(self):
-        # Draw the background image first
         self.screen.blit(self.background_image, (0, 0))
 
-        # Update and draw damage texts
         for text in self.damage_text[:]:
             text.update()
             if text.is_expired():
@@ -190,29 +232,24 @@ class Game:
             else:
                 text.draw(self.screen)
 
-        # Collect XP orbs to remove after the loop
         xp_orbs_to_remove = []
         for xp_orb in self.xp_orbs[:]:
-            if xp_orb.update(self.player, self.screen):  # Pass the screen argument
-                xp_orbs_to_remove.append(xp_orb)  # Mark for removal
+            if xp_orb.update(self.player, self.screen):
+                xp_orbs_to_remove.append(xp_orb)
             else:
                 xp_orb.draw(self.screen)
 
-        # Remove XP orbs outside of the loop
         for xp_orb in xp_orbs_to_remove:
             if xp_orb in self.xp_orbs:
                 self.xp_orbs.remove(xp_orb)
 
-        # Draw the player and their weapon
         self.player.draw(self.screen)
-        self.player.draw_weapon_box(self.screen)  # Draw the weapon box here
+        self.player.draw_weapon_box(self.screen)
 
-        # Update and draw items
         for item in self.items:
             if not item.collected:
                 item.draw(self.screen)
 
-        # Draw enemies and attacks
         for enemy in self.enemies:
             enemy.draw(self.screen)
         for attack in self.attacks:
@@ -221,10 +258,8 @@ class Game:
         pygame.display.flip()
 
     def draw_pause_menu(self, screen, choices, rects):
-        # Draw the background image first
         screen.blit(self.background_image, (0, 0))
 
-        # Draw the player, enemies, and items (static elements)
         self.player.draw(screen)
         for enemy in self.enemies:
             enemy.draw(screen)
@@ -232,7 +267,6 @@ class Game:
             if not item.collected:
                 item.draw(screen)
 
-        # Draw the weapon choice boxes
         for rect, weapon in zip(rects, choices):
             pygame.draw.rect(screen, (0, 0, 0), rect)
             pygame.draw.rect(screen, (255, 255, 255), rect, 2)
@@ -241,7 +275,6 @@ class Game:
             text_rect = text.get_rect(center=rect.center)
             screen.blit(text, text_rect)
 
-        # Finally, update the display
         pygame.display.flip()
 
     def run(self):

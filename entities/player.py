@@ -1,6 +1,7 @@
 import random
 import pygame
 from typing import TYPE_CHECKING
+from entities.character import Character
 
 from weapons.attack import Attack
 from weapons.aura import Aura
@@ -45,34 +46,35 @@ def die():
 
 
 class Player:
-    def __init__(self, game, x, y, image_path, speed):
+    def __init__(self, game, x, y, image_path, character: Character):
         self.game = game
-        try:
-            self.image = pygame.image.load(f'assets/images/{image_path}')
-        except pygame.error as e:
-            print(f"Error loading player image: {e}")
-            self.image = pygame.Surface((50, 50))
-            self.image.fill((255, 255, 255))
-
+        self.character = character
+        self.image = pygame.image.load(f'assets/images/{image_path}')
         self.x = x
         self.y = y
-        self.rect = self.image.get_rect(topleft=(x, y))
-        self.speed = speed
-        self.health = 100
-        self.max_health = 100
-        self.armor = 0
-        self.invincible = False
-        self.invincible_time = 0
-        self.invincible_duration = 1000
-        self.is_alive = True
+        self.rect = self.image.get_rect(topleft=(self.x, self.y))
+
+        # Apply character stats to the player
+        character.apply_to_player(self)
+
+        # Initialize player-specific attributes
+        self.health = character.health
+        self.max_health = character.health
+        self.armor = character.armor
+        self.speed = character.speed
+        self.invincible = False  # Initialize invincibility state
+        self.invincible_time = 0  # Initialize the time when invincibility starts
+        self.invincible_duration = 1000  # Duration of invincibility in milliseconds
+        self.is_alive = True  # Player starts as alive
 
         # Initialize XP and level attributes
         self.level = 1
         self.xp = 0
         self.xp_to_next_level = 200  # XP required to reach the next level
 
-        # Initialize weapons list (empty at the start)
+        # Initialize weapons list
         self.weapons = []
+        self.add_or_level_up_weapon(character.starting_weapon)
 
     def move(self, keys, screen_width, screen_height):
         if keys[pygame.K_a] and self.x > 0:
@@ -188,14 +190,15 @@ class Player:
         self.game.paused = False  # Unpause the game after weapon selection
 
     def add_or_level_up_weapon(self, new_weapon):
+        self.character.apply_to_weapon(new_weapon)
         for weapon in self.weapons:
             if weapon.name == new_weapon.name:
-                weapon.level_up()  # Level up the existing weapon
-                print(f"{weapon.name} leveled up to Level {weapon.level}.")
+                weapon.level_up()
                 return
-        # If the weapon is not found in the inventory, add it
         self.weapons.append(new_weapon)
-        print(f"{new_weapon.name} added to your inventory.")
+        print(f"{new_weapon.name} added to your inventory with stats modified by {self.character.name}.")
+
+
 
     def draw_weapon_box(self, screen):
         font = pygame.font.Font(None, 24)  # Font size adjusted to fit within the box
