@@ -4,6 +4,7 @@ from player import Player
 from item import Item
 from enemy import Enemy
 from attack import Attack
+from xp import XP  # Import the XP class
 from damage_text import DamageText
 
 class Game:
@@ -15,7 +16,12 @@ class Game:
         self.screen = pygame.display.set_mode(self.windowed_size)
         pygame.display.set_caption("2D Roguelite")
 
+        self.background_image = pygame.image.load('images/background.png').convert()
+        self.background_image = pygame.transform.scale(self.background_image, (self.screen_width, self.screen_height))
+
         self.player = Player(self.screen_width // 2, self.screen_height // 2, 'player.png', 5)
+        self.player.choose_starting_weapon(self.screen)
+
         self.item = Item(random.randint(0, self.screen_width - 30),
                          random.randint(0, self.screen_height - 30),
                          'item.png')
@@ -23,11 +29,26 @@ class Game:
         self.enemies = []
         self.attacks = []
         self.damage_texts = []
+        self.xp_orbs = []
 
         self.clock = pygame.time.Clock()
         self.running = True
-        self.spawn_interval = 3000  # Spawn every 3 seconds
+        self.spawn_interval = 10000  # Spawn every 3 seconds
         self.last_spawn_time = pygame.time.get_ticks()
+
+        # Trigger the first wave spawn immediately
+        self.spawn_enemy(count=5)  # Adjust the count as necessary
+
+    def toggle_fullscreen(self):
+        if self.fullscreen:
+            pygame.display.set_mode(self.windowed_size)
+            self.screen_width, self.screen_height = self.windowed_size
+            self.fullscreen = False
+        else:
+            self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+            self.screen_width, self.screen_height = self.screen.get_size()
+            self.fullscreen = True
+
     def game_over(self):
         font = pygame.font.Font(None, 74)
         game_over_text = font.render('Game Over', True, (255, 0, 0))
@@ -65,26 +86,30 @@ class Game:
     def handle_attacks(self):
         nearest_enemy = self.find_nearest_enemy()
         if nearest_enemy and self.player.is_alive:
-            self.player.attack(self.attacks, nearest_enemy)
+            self.player.attack(self.attacks, nearest_enemy, self.enemies)
 
         enemies_to_remove = []
         attacks_to_remove = []
 
+        # Iterate over all attacks to handle them
         for attack in self.attacks:
             attack.update()
             if attack.can_apply_damage():
                 attack.target.take_damage(attack.damage)
-                damage_text = DamageText(attack.target.rect.centerx, attack.target.rect.centery - 20, attack.damage)
-                self.damage_texts.append(damage_text)
-                if attack.target.is_dead():
-                    if attack.target not in enemies_to_remove:
-                        enemies_to_remove.append(attack.target)
-                attacks_to_remove.append(attack)
+                if attack.target.is_dead() and attack.target not in enemies_to_remove:
+                    enemies_to_remove.append(attack.target)
 
+        # Also, handle the Aura attack within the player
+        for enemy in self.enemies:
+            if enemy.is_dead() and enemy not in enemies_to_remove:
+                enemies_to_remove.append(enemy)
+
+        # Remove all dead enemies from the game
         for enemy in enemies_to_remove:
             if enemy in self.enemies:
                 self.enemies.remove(enemy)
 
+        # Clear attacks that are targeting dead enemies
         for attack in attacks_to_remove:
             if attack in self.attacks:
                 self.attacks.remove(attack)
@@ -101,8 +126,22 @@ class Game:
 
     def spawn_enemy(self, count=3):
         for _ in range(count):
-            x = random.randint(0, self.screen_width - 50)
-            y = random.randint(0, self.screen_height - 50)
+            # Randomly decide which edge of the screen to spawn on
+            edge = random.choice(['top', 'bottom', 'left', 'right'])
+
+            if edge == 'top':
+                x = random.randint(0, self.screen_width - 50)
+                y = 0  # Top edge
+            elif edge == 'bottom':
+                x = random.randint(0, self.screen_width - 50)
+                y = self.screen_height - 50  # Bottom edge
+            elif edge == 'left':
+                x = 0  # Left edge
+                y = random.randint(0, self.screen_height - 50)
+            elif edge == 'right':
+                x = self.screen_width - 50  # Right edge
+                y = random.randint(0, self.screen_height - 50)
+
             new_enemy = Enemy(x, y, 'enemy.png', 2)
             self.enemies.append(new_enemy)
 
@@ -116,13 +155,23 @@ class Game:
                     self.damage_texts.append(damage_text)
 
     def update_and_draw(self):
+        # Draw the background image first
+        self.screen.blit(self.background_image, (0, 0))
+
+        # Draw other game elements on top of the background
         for text in self.damage_texts:
             text.update()
             if text.is_expired():
                 self.damage_texts.remove(text)
+        # Update and draw XP orbs
+        for xp_orb in self.xp_orbs[:]:
+            if xp_orb.update(self.player, self.screen):  # Pass the screen argument
+                self.xp_orbs.remove(xp_orb)
+            else:
+                xp_orb.draw(self.screen)
 
-        self.screen.fill((0, 0, 0))
         self.player.draw(self.screen)
+        self.player.draw_weapon_box(self.screen)  # Draw the weapon box here
         if not self.item.collected:
             self.item.draw(self.screen)
         for enemy in self.enemies:

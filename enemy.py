@@ -31,8 +31,15 @@ class Enemy:
             self.y += dy * self.speed
             self.rect.topleft = (self.x, self.y)
 
-    def take_damage(self, damage):
-        self.health -= damage
+    def take_damage(self, amount):
+        self.health -= amount
+        print(f"Enemy took {amount} damage, health is now {self.health}")  # Debugging output
+        if self.health <= 0:
+            self.die()
+
+    def die(self):
+        print("Enemy died")
+        # Handle enemy death (e.g., remove from game, drop XP, etc.)
 
     def is_dead(self):
         return self.health <= 0
