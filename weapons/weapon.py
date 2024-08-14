@@ -1,5 +1,6 @@
 import pygame
 
+
 class Weapon:
     def __init__(self, name, base_damage, fire_rate, projectile_speed, shape, color):
         self.name = name

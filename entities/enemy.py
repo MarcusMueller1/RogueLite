@@ -1,9 +1,13 @@
-import pygame
 import math
+
+import pygame
+
 from entities.xp import XP
 
+
 class Enemy:
-    def __init__(self, x, y, image_path, speed):
+    def __init__(self, x, y, image_path, speed, game):
+        self.game = game  # Store the reference to the game instance
         try:
             self.image = pygame.image.load(f'assets/images/{image_path}')
         except pygame.error as e:
@@ -11,12 +15,13 @@ class Enemy:
             self.image = pygame.Surface((50, 50))
             self.image.fill((255, 0, 0))
 
+        self.dead = False
         self.x = x
         self.y = y
         self.rect = self.image.get_rect(topleft=(x, y))
         self.speed = speed
-        self.health = 50  # Initial health for the enemy
-        self.damage = 10  # Damage the enemy deals to the player on collision
+        self.health = 50
+        self.damage = 10
 
     def draw(self, screen):
         screen.blit(self.image, (self.x, self.y))
@@ -45,7 +50,7 @@ class Enemy:
                 distance = math.hypot(dx, dy)
                 min_distance = self.rect.width / 2 + other.rect.width / 2
 
-                if distance < min_distance and distance > 0:
+                if min_distance > distance > 0:
                     # Apply a repulsive force to move them apart
                     overlap = min_distance - distance
                     dx /= distance
@@ -55,19 +60,19 @@ class Enemy:
                     self.rect.topleft = (self.x, self.y)
 
     def take_damage(self, amount):
-        if self.health <= 0:
-            return  # Prevent further damage if the enemy is already dead
-
-        self.health -= amount
-        if self.health <= 0:
-            self.health = 0  # Prevent health from going negative
-            self.die()
+        if self.health > 0 and not self.dead:  # Only apply damage if the enemy is alive and not already dead
+            self.health -= amount
+            if self.health <= 0:
+                self.health = 0  # Prevent health from going negative
+                self.die()
 
     def die(self):
-        print("Enemy died")
-        xp_value = 50  # Example value, adjust as necessary
-        xp_orb = XP(self.rect.centerx, self.rect.centery, xp_value)
-        return xp_orb  # Return the created XP orb
+        if not self.dead:
+            self.dead = True
+            print("Enemy died")
+            xp_value = 50
+            xp_orb = XP(self.rect.centerx, self.rect.centery, xp_value)
+            self.game.xp_orbs.append(xp_orb)  # Add XP orb to the game's xp_orbs list
 
     def is_dead(self):
-        return self.health <= 0
+        return self.dead

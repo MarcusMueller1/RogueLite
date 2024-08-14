@@ -1,5 +1,6 @@
 import pygame
 
+
 class DamageText:
     def __init__(self, x, y, damage, font_size=20, color=(255, 0, 0), duration=1000):
         self.x = x

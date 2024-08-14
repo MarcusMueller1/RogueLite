@@ -1,5 +1,7 @@
-import pygame
 import math
+
+import pygame
+
 
 class Attack:
     def __init__(self, x, y, target, speed, shape, color, damage, delay=100):

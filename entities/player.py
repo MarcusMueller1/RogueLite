@@ -1,8 +1,7 @@
 import random
-
 import pygame
+from typing import TYPE_CHECKING
 
-from game_logic import game
 from weapons.attack import Attack
 from weapons.aura import Aura
 from weapons.flamethrower import Flamethrower
@@ -46,7 +45,7 @@ def die():
 
 
 class Player:
-    def __init__(self, x, y, image_path, speed):
+    def __init__(self, game, x, y, image_path, speed):
         self.game = game
         try:
             self.image = pygame.image.load(f'assets/images/{image_path}')
@@ -156,21 +155,21 @@ class Player:
         self.xp_to_next_level = int(self.xp_to_next_level * 1.5)  # Increase XP required for the next level
         self.max_health += 10  # Increase player's max health as an example
         self.health = self.max_health  # Heal the player to full health
-        self.choose_new_weapon(screen)  # Allow the player to choose a new weapons
+        self.choose_new_weapon(screen)  # Allow the player to choose a new weapon
         print(f"Leveled up! Now at level {self.level}, XP needed for next level: {self.xp_to_next_level}")
 
     def choose_new_weapon(self, screen):
         self.game.paused = True
 
-        available_weapons = [Pistol(), Rifle(), Shotgun(), Sniper(), RocketLauncher(), Flamethrower(),
-                             Aura()]  # Add Aura here
+        available_weapons = [Pistol(), Rifle(), Shotgun(), Sniper(), RocketLauncher(), Flamethrower(), Aura()]
         random.shuffle(available_weapons)
-        choices = available_weapons[:3]  # Pick 3 random weapons
+        choices = available_weapons[:3]
 
         rects = display_weapon_choices(screen, choices)
 
         chosen_weapon = None
         while not chosen_weapon:
+            # Handle events
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
@@ -182,15 +181,19 @@ class Player:
                             chosen_weapon = choices[i]
                             self.add_or_level_up_weapon(chosen_weapon)
                             break
-        self.game.paused = True
+
+            # Use the dedicated drawing function for the pause menu
+            self.game.draw_pause_menu(screen, choices, rects)
+
+        self.game.paused = False  # Unpause the game after weapon selection
 
     def add_or_level_up_weapon(self, new_weapon):
         for weapon in self.weapons:
             if weapon.name == new_weapon.name:
-                weapon.level_up()  # Level up the existing weapons
+                weapon.level_up()  # Level up the existing weapon
                 print(f"{weapon.name} leveled up to Level {weapon.level}.")
                 return
-        # If the weapons is not found in the inventory, add it
+        # If the weapon is not found in the inventory, add it
         self.weapons.append(new_weapon)
         print(f"{new_weapon.name} added to your inventory.")
 
@@ -210,21 +213,21 @@ class Player:
             pygame.draw.rect(screen, (0, 0, 0), rect)
             pygame.draw.rect(screen, (255, 255, 255), rect, 2)
 
-            # Draw the weapons name and level
+            # Draw the weapon's name and level
             text = font.render(f"{weapon.name} (Lvl. {weapon.level})", True, (255, 255, 255))
             text_rect = text.get_rect(center=rect.center)
             screen.blit(text, text_rect)
 
     def choose_starting_weapon(self, screen):
-        available_weapons = [Pistol(), Rifle(), Shotgun(), Sniper(), RocketLauncher(), Flamethrower(),
-                             Aura()]  # Add Aura here
+        available_weapons = [Pistol(), Rifle(), Shotgun(), Sniper(), RocketLauncher(), Flamethrower(), Aura()]
         random.shuffle(available_weapons)
-        choices = available_weapons[:3]  # Randomly select 3 weapons
+        choices = available_weapons[:3]
 
         rects = display_weapon_choices(screen, choices)
 
         chosen_weapon = None
         while not chosen_weapon:
+            # Handle events
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
@@ -236,6 +239,9 @@ class Player:
                             chosen_weapon = choices[i]
                             self.add_or_level_up_weapon(chosen_weapon)
                             break
+
+            # Use the dedicated drawing function for the pause menu
+            self.game.draw_pause_menu(screen, choices, rects)
 
     def take_damage(self, damage):
         if not self.invincible:
@@ -256,4 +262,3 @@ class Player:
             current_time = pygame.time.get_ticks()
             if current_time - self.invincible_time > self.invincible_duration:
                 self.invincible = False  # End invincibility
-
