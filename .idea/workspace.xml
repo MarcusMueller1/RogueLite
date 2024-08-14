@@ -4,22 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0655a2ea-ddb4-4663-b5b4-42cc82c705b3" name="Changes" comment="0.143">
+    <list default="true" id="0655a2ea-ddb4-4663-b5b4-42cc82c705b3" name="Changes" comment="0.2">
+      <change afterPath="$PROJECT_DIR$/items/armor_upgrade.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/items/health_potion.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/items/speed_boost.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/attack.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/damage_text.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/enemy.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/game.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/background.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/enemy.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/fireball.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/item.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/player.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/item.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/player.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/weapon.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/xp.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/entities/item.py" beforeDir="false" afterPath="$PROJECT_DIR$/items/item.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/game.py" beforeDir="false" afterPath="$PROJECT_DIR$/game/game.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -101,7 +92,7 @@
       <option name="presentableId" value="Default" />
       <updated>1723146406489</updated>
       <workItem from="1723146407550" duration="7937000" />
-      <workItem from="1723648197836" duration="298000" />
+      <workItem from="1723648197836" duration="2006000" />
     </task>
     <task id="LOCAL-00001" summary="test">
       <option name="closed" value="true" />
@@ -151,7 +142,23 @@
       <option name="project" value="LOCAL" />
       <updated>1723154409887</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="0.2">
+      <option name="closed" value="true" />
+      <created>1723648507475</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1723648507475</updated>
+    </task>
+    <task id="LOCAL-00008" summary="0.2">
+      <option name="closed" value="true" />
+      <created>1723648516424</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1723648516424</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -174,13 +181,14 @@
     <MESSAGE value="0.13" />
     <MESSAGE value="0.14" />
     <MESSAGE value="0.142" />
-    <option name="LAST_COMMIT_MESSAGE" value="0.142" />
+    <MESSAGE value="0.2" />
+    <option name="LAST_COMMIT_MESSAGE" value="0.2" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/RogueLite$player.coverage" NAME="player Coverage Results" MODIFIED="1723150534272" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/RogueLite$enemy.coverage" NAME="enemy Coverage Results" MODIFIED="1723645540781" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/RogueLite$game.coverage" NAME="game Coverage Results" MODIFIED="1723645699525" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/RogueLite$main.coverage" NAME="main Coverage Results" MODIFIED="1723646563635" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/RogueLite$main.coverage" NAME="main Coverage Results" MODIFIED="1723650179562" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/RogueLite$item.coverage" NAME="item Coverage Results" MODIFIED="1723152658051" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/RogueLite$weapon.coverage" NAME="weapon Coverage Results" MODIFIED="1723645807106" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>

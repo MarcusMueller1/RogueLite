@@ -1,5 +1,6 @@
 import pygame
 
+
 class Item:
     def __init__(self, x, y, image_path):
         try:
@@ -20,7 +21,11 @@ class Item:
 
     def check_pickup(self, player):
         if self.rect.colliderect(player.rect):
+            self.apply_effect(player)
             self.collected = True
-            player.can_shoot = True  # Set the player's ability to shoot
             return True
         return False
+
+    def apply_effect(self, player):
+        """Override this method in subclasses to apply specific effects."""
+        pass

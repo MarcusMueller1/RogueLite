@@ -1,10 +1,11 @@
 import pygame
 import random
+
+from items.armor_upgrade import ArmorUpgrade
+from items.health_potion import HealthPotion
 from entities.player import Player
-from entities.item import Item
 from entities.enemy import Enemy
-from weapons.attack import Attack
-from entities.xp import XP
+from items.speed_boost import SpeedBoost
 from game.ui import DamageText
 from game.utils import get_distance
 
@@ -23,9 +24,14 @@ class Game:
         self.player = Player(self.screen_width // 2, self.screen_height // 2, 'player.png', 5)
         self.player.choose_starting_weapon(self.screen)
 
-        self.item = Item(random.randint(0, self.screen_width - 30),
-                         random.randint(0, self.screen_height - 30),
-                         'item.png')
+        self.items = [
+            HealthPotion(random.randint(0, self.screen_width - 30), random.randint(0, self.screen_height - 30),
+                         'health_potion.png'),
+            SpeedBoost(random.randint(0, self.screen_width - 30), random.randint(0, self.screen_height - 30),
+                       'speed_boost.png'),
+            ArmorUpgrade(random.randint(0, self.screen_width - 30), random.randint(0, self.screen_height - 30),
+                         'armor_upgrade.png')
+        ]
 
         self.enemies = []
         self.attacks = []
@@ -49,6 +55,9 @@ class Game:
             self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
             self.screen_width, self.screen_height = self.screen.get_size()
             self.fullscreen = True
+
+        # Resize the background image to fit the new screen size
+        self.background_image = pygame.transform.scale(self.background_image, (self.screen_width, self.screen_height))
 
     def game_over(self):
         font = pygame.font.Font(None, 74)
@@ -168,16 +177,21 @@ class Game:
             else:
                 xp_orb.draw(self.screen)
 
+        # Draw the player and their weapon
         self.player.draw(self.screen)
-        self.player.draw_weapon_box(self.screen)  # Draw the weapons box here
-        if not self.item.collected:
-            self.item.draw(self.screen)
+        self.player.draw_weapon_box(self.screen)  # Draw the weapon box here
+
+        # Update and draw items
+        for item in self.items:
+            if not item.collected:
+                item.draw(self.screen)
+
+        # Draw enemies and attacks
         for enemy in self.enemies:
             enemy.draw(self.screen)
         for attack in self.attacks:
             attack.draw(self.screen)
-        for text in self.damage_texts:
-            text.draw(self.screen)
+
         pygame.display.flip()
 
     def run(self):
@@ -195,8 +209,10 @@ class Game:
 
             self.player.update_invincibility()  # Ensure this is called to manage invincibility
 
-            if not self.item.collected:
-                self.item.check_pickup(self.player)
+            # Update items logic
+            for item in self.items:
+                if not item.collected:
+                    item.check_pickup(self.player)
 
             if current_time - self.last_spawn_time > self.spawn_interval:
                 self.spawn_enemy(count=5)
