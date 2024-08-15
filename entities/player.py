@@ -1,6 +1,5 @@
 import random
 import pygame
-from typing import TYPE_CHECKING
 from entities.character import Character
 
 from weapons.attack import Attack
@@ -104,6 +103,12 @@ class Player:
         for weapon in self.weapons:
             if isinstance(weapon, Aura):
                 weapon.apply_damage(enemies, self, damage_texts)  # Pass the damage_texts list
+            elif isinstance(weapon, Flamethrower):
+                # Handle the Flamethrower differently to shoot multiple projectiles
+                direction = (0, 0)
+                if target:
+                    direction = (target.rect.centerx - self.rect.centerx, target.rect.centery - self.rect.centery)
+                weapon.shoot(self, direction, attacks)
             else:
                 if weapon.can_shoot() and target is not None:
                     attack = Attack(self.rect.centerx, self.rect.centery, target, weapon.projectile_speed, weapon.shape,
@@ -198,10 +203,26 @@ class Player:
                             self.add_or_level_up_weapon(chosen_weapon)
                             break
 
-            # Instead of redrawing the background, just draw the current state
-            self.draw(screen, current_camera_x,
-                      current_camera_y)  # Draw the player and other entities in their last known positions
-            self.game.draw_pause_menu(screen, choices, rects)  # Overlay the weapon selection screen
+            # Draw the background using the camera offset
+            screen.blit(self.game.background_image, (-current_camera_x, -current_camera_y))
+
+            # Draw XP Orbs first to ensure they are behind the weapon selection UI
+            for xp_orb in self.game.xp_orbs:
+                xp_orb.draw(screen, current_camera_x, current_camera_y)
+
+            # Draw the player, enemies, and items in their last known positions
+            self.draw(screen, current_camera_x, current_camera_y)
+            for enemy in self.game.enemies:
+                enemy.draw(screen, current_camera_x, current_camera_y)
+            for item in self.game.items:
+                if not item.collected:
+                    item.draw(screen, current_camera_x, current_camera_y)
+
+            # Draw Weapon Box on the top left
+            self.draw_weapon_box(screen)
+
+            # Finally, draw the weapon selection screen on top
+            self.game.draw_pause_menu(screen, choices, rects)
 
             pygame.display.flip()  # Update the full display surface to the screen
 

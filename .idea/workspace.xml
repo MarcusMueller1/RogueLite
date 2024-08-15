@@ -5,7 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0655a2ea-ddb4-4663-b5b4-42cc82c705b3" name="Changes" comment="0.2">
+      <change beforePath="$PROJECT_DIR$/.idea/RogueLite.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/RogueLite.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_14_08_2024_16_22__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_14_08_2024_16_22__Changes_.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/entities/player.py" beforeDir="false" afterPath="$PROJECT_DIR$/entities/player.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game_logic/game.py" beforeDir="false" afterPath="$PROJECT_DIR$/game_logic/game.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/weapons/attack.py" beforeDir="false" afterPath="$PROJECT_DIR$/weapons/attack.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/weapons/flamethrower.py" beforeDir="false" afterPath="$PROJECT_DIR$/weapons/flamethrower.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/weapons/pistol.py" beforeDir="false" afterPath="$PROJECT_DIR$/weapons/pistol.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/weapons/rifle.py" beforeDir="false" afterPath="$PROJECT_DIR$/weapons/rifle.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/weapons/shotgun.py" beforeDir="false" afterPath="$PROJECT_DIR$/weapons/shotgun.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/weapons/sniper.py" beforeDir="false" afterPath="$PROJECT_DIR$/weapons/sniper.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -29,12 +40,12 @@
     &quot;assignee&quot;: &quot;MarcusMueller1&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/MarcusMueller1/RogueLite&quot;,
-    &quot;accountId&quot;: &quot;29e16040-3a9d-4602-8c0d-ea950a60030d&quot;
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/MarcusMueller1/RogueLite.git",
+    "accountId": "83d262cd-57f5-4c9c-bb3a-2331b6d2d943"
   }
-}</component>
+}]]></component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$USER_HOME$/AppData/Local/JetBrains/PyCharm2024.1/python_stubs/-116868417/builtins.py" root0="FORCE_HIGHLIGHTING" />
   </component>
@@ -81,8 +92,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-410509235cf1-JavaScript-PY-242.20224.347" />
-        <option value="bundled-python-sdk-c2d6afa66fbe-39cff9de6eef-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-242.20224.347" />
+        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-PY-241.18968.29" />
+        <option value="bundled-python-sdk-f5635417b835-2767605e8bc2-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-241.18968.29" />
       </set>
     </attachedChunks>
   </component>
@@ -96,14 +107,6 @@
       <updated>1723146406489</updated>
       <workItem from="1723146407550" duration="7937000" />
       <workItem from="1723648197836" duration="12991000" />
-      <workItem from="1723710186535" duration="90000" />
-      <workItem from="1723710287186" duration="171000" />
-      <workItem from="1723710476952" duration="53000" />
-      <workItem from="1723710610485" duration="39000" />
-      <workItem from="1723712391872" duration="217000" />
-      <workItem from="1723712935486" duration="4000" />
-      <workItem from="1723713442771" duration="15000" />
-      <workItem from="1723713982824" duration="4000" />
     </task>
     <task id="LOCAL-00001" summary="test">
       <option name="closed" value="true" />
@@ -217,31 +220,7 @@
       <option name="project" value="LOCAL" />
       <updated>1723660344727</updated>
     </task>
-    <task id="LOCAL-00015" summary="0.2">
-      <option name="closed" value="true" />
-      <created>1723710397367</created>
-      <option name="number" value="00015" />
-      <option name="presentableId" value="LOCAL-00015" />
-      <option name="project" value="LOCAL" />
-      <updated>1723710397367</updated>
-    </task>
-    <task id="LOCAL-00016" summary="0.2">
-      <option name="closed" value="true" />
-      <created>1723710490418</created>
-      <option name="number" value="00016" />
-      <option name="presentableId" value="LOCAL-00016" />
-      <option name="project" value="LOCAL" />
-      <updated>1723710490418</updated>
-    </task>
-    <task id="LOCAL-00017" summary="0.2">
-      <option name="closed" value="true" />
-      <created>1723710627129</created>
-      <option name="number" value="00017" />
-      <option name="presentableId" value="LOCAL-00017" />
-      <option name="project" value="LOCAL" />
-      <updated>1723710627129</updated>
-    </task>
-    <option name="localTasksCounter" value="18" />
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -268,12 +247,12 @@
     <option name="LAST_COMMIT_MESSAGE" value="0.2" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/RogueLite$player.coverage" NAME="player Coverage Results" MODIFIED="1723652490529" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/entities" />
+    <SUITE FILE_PATH="coverage/RogueLite$player.coverage" NAME="player Coverage Results" MODIFIED="1723150534272" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/RogueLite$aura.coverage" NAME="aura Coverage Results" MODIFIED="1723669873105" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/weapons" />
     <SUITE FILE_PATH="coverage/RogueLite$ui.coverage" NAME="ui Coverage Results" MODIFIED="1723672266513" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/game_logic" />
-    <SUITE FILE_PATH="coverage/RogueLite$enemy.coverage" NAME="enemy Coverage Results" MODIFIED="1723645540781" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/RogueLite$game.coverage" NAME="game Coverage Results" MODIFIED="1723654852386" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/game_logic" />
-    <SUITE FILE_PATH="coverage/RogueLite$main.coverage" NAME="main Coverage Results" MODIFIED="1723672386257" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/RogueLite$enemy.coverage" NAME="enemy Coverage Results" MODIFIED="1723150128412" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/RogueLite$game.coverage" NAME="game Coverage Results" MODIFIED="1723638491490" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/RogueLite$main.coverage" NAME="main Coverage Results" MODIFIED="1723718923180" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/RogueLite$item.coverage" NAME="item Coverage Results" MODIFIED="1723152658051" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/RogueLite$weapon.coverage" NAME="weapon Coverage Results" MODIFIED="1723645807106" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>

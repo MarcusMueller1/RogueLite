@@ -113,15 +113,21 @@ class Game:
 
     def toggle_fullscreen(self):
         if self.fullscreen:
+            # Switch to windowed mode
             pygame.display.set_mode(self.windowed_size)
             self.screen_width, self.screen_height = self.windowed_size
             self.fullscreen = False
         else:
+            # Switch to fullscreen mode
             self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
             self.screen_width, self.screen_height = self.screen.get_size()
             self.fullscreen = True
 
-        self.background_image = pygame.transform.scale(self.background_image, (self.screen_width, self.screen_height))
+        # Rescale the background image to fit the new screen size
+        self.background_image = pygame.transform.scale(self.background_image, (self.map_width, self.map_height))
+
+        # Recalculate the camera position to ensure it stays within the map boundaries
+        self.update_camera()
 
     def game_over(self):
         font = pygame.font.Font(None, 74)
@@ -162,33 +168,24 @@ class Game:
         if nearest_enemy and self.player.is_alive:
             self.player.attack(self.attacks, nearest_enemy, self.enemies, self.damage_text)
 
-        enemies_to_remove = []
         attacks_to_remove = []
 
         for attack in self.attacks:
-            attack.update()
-            if attack.can_apply_damage():
-                if attack.target.is_dead():
-                    attacks_to_remove.append(attack)
-                    continue
-
-                attack.target.take_damage(attack.damage)
-                damage_text = DamageText(attack.target.rect.centerx, attack.target.rect.centery, attack.damage)
-                self.damage_text.append(damage_text)
-
-                if attack.target.is_dead() and attack.target not in enemies_to_remove:
-                    enemies_to_remove.append(attack.target)
-
+            attack.update(self.enemies, self.damage_text)  # Pass in the list of damage_texts
+            if not attack.active:
                 attacks_to_remove.append(attack)
-
-        for enemy in enemies_to_remove:
-            if enemy in self.enemies:
-                enemy.die()
-                self.enemies.remove(enemy)
 
         for attack in attacks_to_remove:
             if attack in self.attacks:
                 self.attacks.remove(attack)
+
+        # Update and draw damage texts
+        for text in self.damage_text[:]:
+            text.update()
+            if text.is_expired():
+                self.damage_text.remove(text)
+            else:
+                text.draw(self.screen, self.camera_x, self.camera_y)
 
     def find_nearest_enemy(self):
         if self.enemies:
@@ -243,7 +240,6 @@ class Game:
     def update_and_draw(self):
         self.screen.blit(self.background_image, (-self.camera_x, -self.camera_y))
 
-
         for text in self.damage_text[:]:
             text.update()
             if text.is_expired():
@@ -278,23 +274,12 @@ class Game:
         pygame.display.flip()
 
     def draw_pause_menu(self, screen, choices, rects):
-        # Draw the background using the camera offset
-        screen.blit(self.background_image, (-self.camera_x, -self.camera_y))
-
-        # Draw the player, enemies, and items with camera offsets
-        self.player.draw(screen, self.camera_x, self.camera_y)
-        for enemy in self.enemies:
-            enemy.draw(screen, self.camera_x, self.camera_y)
-        for item in self.items:
-            if not item.collected:
-                item.draw(screen, self.camera_x, self.camera_y)
-
-        # Draw the weapon selection menu
+        # Draw the weapon selection menu (this will be on top of everything else)
         for rect, weapon in zip(rects, choices):
             pygame.draw.rect(screen, (0, 0, 0), rect)
             pygame.draw.rect(screen, (255, 255, 255), rect, 2)
             font = pygame.font.Font(None, 30)
-            text = font.render(f"{weapon.name} (Lvl. {weapon.level})", True, (255, 255, 255))
+            text = font.render(f"{weapon.name}", True, (255, 255, 255))
             text_rect = text.get_rect(center=rect.center)
             screen.blit(text, text_rect)
 
