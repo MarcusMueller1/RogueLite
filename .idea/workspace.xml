@@ -4,10 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0655a2ea-ddb4-4663-b5b4-42cc82c705b3" name="Changes" comment="0.2">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/weapons/flamethrower.py" beforeDir="false" afterPath="$PROJECT_DIR$/weapons/flamethrower.py" afterDir="false" />
-    </list>
+    <list default="true" id="0655a2ea-ddb4-4663-b5b4-42cc82c705b3" name="Changes" comment="0.2" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -98,7 +95,7 @@
       <workItem from="1723146407550" duration="7937000" />
       <workItem from="1723648197836" duration="12991000" />
       <workItem from="1723710186535" duration="90000" />
-      <workItem from="1723710287186" duration="50000" />
+      <workItem from="1723710287186" duration="171000" />
     </task>
     <task id="LOCAL-00001" summary="test">
       <option name="closed" value="true" />
@@ -212,7 +209,15 @@
       <option name="project" value="LOCAL" />
       <updated>1723660344727</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="0.2">
+      <option name="closed" value="true" />
+      <created>1723710397367</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1723710397367</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
