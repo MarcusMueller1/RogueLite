@@ -17,7 +17,7 @@ from game_logic.utils import get_distance
 
 
 class Game:
-    def __init__(self):
+    def __init__(self, character):
         pygame.init()
         self.map_width = 2560
         self.map_height = 1440
@@ -56,8 +56,7 @@ class Game:
         # Spawn initial items
         self.spawn_items()
 
-        # Character selection and player initialization
-        character = self.choose_character()
+        # Initialize the player with the selected character
         self.player = Player(self, self.screen_width // 2, self.screen_height // 2, 'player.png', character)
 
         self.paused = False
@@ -99,32 +98,6 @@ class Game:
                          'armor_upgrade.png')
         ]
 
-    def choose_character(self):
-        characters = [
-            Character("Warrior", health=150, armor=10, speed=5.0, damage=1.2, attack_speed=0.9, radius=1.0,
-                      starting_weapon=Pistol()),
-            Character("Mage", health=100, armor=5, speed=5, damage=1.5, attack_speed=1.1, radius=1.5,
-                      starting_weapon=Aura()),
-            Character("Rogue", health=80, armor=3, speed=5, damage=1.3, attack_speed=1.5, radius=1.0,
-                      starting_weapon=Flamethrower()),
-        ]
-
-        rects = self.display_character_choices(characters)
-        chosen_character = None
-
-        while not chosen_character:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    exit()
-                elif event.type == pygame.MOUSEBUTTONDOWN:
-                    mouse_pos = pygame.mouse.get_pos()
-                    for i, rect in enumerate(rects):
-                        if rect.collidepoint(mouse_pos):
-                            chosen_character = characters[i]
-                            break
-
-        return chosen_character
 
     def display_character_choices(self, characters):
         font = pygame.font.Font(None, 30)
