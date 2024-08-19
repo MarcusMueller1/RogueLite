@@ -247,7 +247,7 @@ class Game:
         for enemy in self.enemies:
             enemy.move_towards_player(self.player, self.enemies)
 
-            collision_distance = 10
+            collision_distance = 3
             if self.player.rect.inflate(collision_distance, collision_distance).colliderect(enemy.rect):
                 effective_damage = self.player.take_damage(enemy.damage)
                 if effective_damage > 0:
