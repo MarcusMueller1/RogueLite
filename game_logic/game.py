@@ -2,7 +2,6 @@ import random
 import pygame
 
 from game_logic.wave_config import wave_data  # Import wave configurations
-from entities.enemy import Enemy
 from entities.enemy_types import FastEnemy, TankEnemy  # Import custom enemy types
 from game_logic.enemy_wave import Wave  # Import the Wave class
 from entities.character import Character
@@ -65,13 +64,16 @@ class Game:
 
     def load_waves_from_config(self):
         for wave_info in wave_data:
-            wave = Wave(enemy_configs=wave_info["enemy_configs"], spawn_delay=wave_info["spawn_delay"])
+            wave = Wave(enemy_configs=wave_info["enemy_configs"])
             self.waves.append(wave)
 
     def initialize_waves(self):
-        wave1 = Wave(enemy_configs=[(FastEnemy, 5, 'fast_enemy.png', 4), (TankEnemy, 3, 'tank_enemy.png', 1)], spawn_delay=800)
-        wave2 = Wave(enemy_configs=[(TankEnemy, 2, 'tank_enemy.png', 1), (FastEnemy, 4, 'fast_enemy.png', 4)], spawn_delay=1000)
-        wave3 = Wave(enemy_configs=[(TankEnemy, 2, 'tank_enemy.png', 1), (FastEnemy, 4, 'fast_enemy.png', 4)],spawn_delay=1000)
+        wave1 = Wave(enemy_configs=[(FastEnemy, 5, 'fast_enemy.png', 4), (TankEnemy, 3, 'tank_enemy.png', 1)],
+                     spawn_delay=800)
+        wave2 = Wave(enemy_configs=[(TankEnemy, 2, 'tank_enemy.png', 1), (FastEnemy, 4, 'fast_enemy.png', 4)],
+                     spawn_delay=1000)
+        wave3 = Wave(enemy_configs=[(TankEnemy, 2, 'tank_enemy.png', 1), (FastEnemy, 4, 'fast_enemy.png', 4)],
+                     spawn_delay=1000)
         wave4 = Wave(enemy_configs=[(TankEnemy, 2, 'tank_enemy.png', 1), (FastEnemy, 4, 'fast_enemy.png', 4)],
                      spawn_delay=1000)
         wave5 = Wave(enemy_configs=[(TankEnemy, 2, 'tank_enemy.png', 1), (FastEnemy, 4, 'fast_enemy.png', 4)],
@@ -85,9 +87,7 @@ class Game:
         wave9 = Wave(enemy_configs=[(TankEnemy, 2, 'tank_enemy.png', 1), (FastEnemy, 4, 'fast_enemy.png', 4)],
                      spawn_delay=1000)
 
-
         self.waves.extend([wave1, wave2, wave3, wave4, wave5, wave6, wave7, wave8, wave9])
-
 
     def spawn_items(self):
         self.items = [
@@ -257,6 +257,7 @@ class Game:
     def update_and_draw(self):
         self.screen.blit(self.background_image, (-self.camera_x, -self.camera_y))
 
+        # Update and draw game entities like damage text, xp orbs, player, enemies, etc.
         for text in self.damage_text[:]:
             text.update()
             if text.is_expired():
@@ -287,21 +288,17 @@ class Game:
         for attack in self.attacks:
             attack.draw(self.screen, self.camera_x, self.camera_y)
 
+        # Time-based wave spawning logic
         current_time = pygame.time.get_ticks()
         if self.current_wave_index < len(self.waves):
             current_wave = self.waves[self.current_wave_index]
             current_wave.spawn(self)
 
-            # Check if it's time to start the next wave
+            # Start next wave based on time, without affecting existing enemies
             if current_time - self.last_wave_time >= self.time_between_waves:
+                print(f"Wave {self.current_wave_index + 1} completed. Moving to next wave.")
                 self.current_wave_index += 1
                 self.last_wave_time = current_time
-
-        # Ensure that if all waves are completed, the game doesn't crash or exit
-        if self.current_wave_index >= len(self.waves):
-            print("All waves completed.")
-            # Optionally, reset the wave index to loop through waves again
-            # self.current_wave_index = 0
 
         pygame.display.flip()
 
@@ -350,4 +347,3 @@ class Game:
             self.clock.tick(60)
 
         pygame.quit()
-

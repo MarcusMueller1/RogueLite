@@ -124,7 +124,6 @@ class Player:
             if isinstance(weapon, Aura):
                 weapon.draw(screen, self.rect.centerx, self.rect.centery, camera_x, camera_y)
 
-
     def draw_health_bar(self, screen, camera_x=0, camera_y=0):
         bar_width = 100
         bar_height = 10
@@ -239,8 +238,6 @@ class Player:
                 weapon.level_up()
                 return
         self.weapons.append(new_weapon)
-
-
 
     def draw_weapon_box(self, screen):
         font = pygame.font.Font(None, 24)  # Font size adjusted to fit within the box

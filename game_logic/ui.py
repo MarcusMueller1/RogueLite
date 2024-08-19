@@ -14,7 +14,6 @@ class DamageText:
         self.text = self.font.render(str(self.damage), True, self.color)
         self.rect = self.text.get_rect(center=(self.x, self.y))
 
-   # weapon.draw(screen, self.rect.centerx, self.rect.centery, camera_x, camera_y)
     def update(self):
         # Move the text up slightly
         self.y -= 1
